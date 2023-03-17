@@ -1,7 +1,7 @@
 <?php
 
 // Protein verilerinin alındığı URL
-$url = 'https://www.ebi.ac.uk/proteins/api/proteins?&size=100&reviewed=true&organism=human&format=fasta';
+$url = 'https://www.ebi.ac.uk/proteins/api/proteins?&size=10&reviewed=true&organism=human&format=fasta';
 
 // Protein verilerini al
 $data = file_get_contents($url);
