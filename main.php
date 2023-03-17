@@ -101,7 +101,7 @@ function extractTxt(array $datas)
     }
 }
 
-$proteins = getSequenceProtName(0, -1, 'human');
+$proteins = getSequenceProtName(0, 100, 'human');
 
 $sequence_part = "IVMT";
 $prot_names = [];
