@@ -1,20 +1,28 @@
 <?php
 ini_set('memory_limit', '-1');
 set_time_limit(0);
-function getSequenceProtName($offset, $size, $organism)
+
+function getProtein($offset, $size, $organism)
 {
     // Protein verilerinin alındığı URL
     $url = "https://www.ebi.ac.uk/proteins/api/proteins?offset=" . $offset . "&size=" . $size . "&reviewed=true&organism=" . $organism . "&format=fasta";
-    // Verileri almak için curl kullanımı
 
+    // Verileri almak için curl kullanımı
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $output = curl_exec($ch);
+    $response = curl_exec($ch);
     curl_close($ch);
+
+    return $response;
+}
+
+function getSequenceProtName(string $proteinsFasta)
+{
+
     $sequence = "";
     // Fasta formatındaki verileri başlık ve sekans dizilerine ayırma
-    $lines = explode("\n", $output);
+    $lines = explode("\n", $proteinsFasta);
     $sequences = array();
     $headers = array();
     foreach ($lines as $line) {
@@ -101,21 +109,39 @@ function extractTxt(array $datas)
     }
 }
 
-$proteins = getSequenceProtName(0, 100, 'human');
+function getBlast()
+{
 
-$sequence_part = "IVMT";
-$prot_names = [];
-$blast_seq = [];
+    $proteinsFasta = getProtein(0, 100, 'human');
 
-foreach ($proteins as $key => $sequence) {
-    $blast = getSimilarrity($sequence, $sequence_part);
-    if ($blast) {
-        //YOKSA EKLESİN VARSA EKLEMESİN. BELKİ SORGUDA HATA YAPABİLİRİM.
-        $prot_names[] = $key;
-        array_push($blast_seq, $blast[0]);
+    $sequences = getSequenceProtName($proteinsFasta);
+
+    $sequence_part = "IVMT";
+    $prot_names = [];
+    $blast_seq = [];
+
+    foreach ($sequences as $key => $sequence) {
+        $blast = getSimilarrity($sequence, $sequence_part);
+        if ($blast) {
+            //YOKSA EKLESİN VARSA EKLEMESİN. BELKİ SORGUDA HATA YAPABİLİRİM.
+            $prot_names[] = $key;
+            array_push($blast_seq, $blast[0]);
+        }
     }
+
+    return $blast_seq;
 }
-extractTxt($blast_seq);
+
+$blast = getBlast();
+
+extractTxt($blast);
+
+
+
+
+
+
+
 
 ?>
 
@@ -163,7 +189,7 @@ extractTxt($blast_seq);
         <div class="row">
             <div class="col-md-12">
                 <div class="list-group">
-                    <?php foreach ($blast_seq as $seq) { ?>
+                    <?php foreach ($blast as $seq) { ?>
                         <button type="button" class="list-group-item list-group-item-action word-break text-center" style="overflow-wrap: break-word;"><?= $seq ?></button>
                     <?php } ?>
                 </div>
