@@ -111,9 +111,7 @@ function extractTxt(array $datas)
 
 function getBlast()
 {
-
     $proteinsFasta = getProtein(0, 100, 'human');
-
     $sequences = getSequenceProtName($proteinsFasta);
 
     $sequence_part = "IVMT";
