@@ -65,6 +65,8 @@ function getSequenceProtName(string $proteinsFasta)
  */
     return $proteins;
 }
+//Deneme amaçlı
+//print_r(getSequenceProtName(getProtein(0, 100, 'human')));
 
 function getSimilarrity($sequence, $sequence_part)
 {
