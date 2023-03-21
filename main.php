@@ -137,12 +137,6 @@ $blast = getBlast();
 extractTxt($blast);
 
 
-
-
-
-
-
-
 ?>
 
 
